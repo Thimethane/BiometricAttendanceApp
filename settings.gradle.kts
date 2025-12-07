@@ -11,7 +11,9 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
+    // Ensure all repositories are defined here (no project-level repos)
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
@@ -21,4 +23,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "BiometricAttendanceApp"
 include(":app")
- 

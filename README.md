@@ -148,51 +148,110 @@ A personal smartphone-based system where employees use their own devices with bu
 
 ### Dependencies (build.gradle.kts)
 ```kotlin
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+}
+
+android {
+    namespace = "com.timothee.biometricattendance"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.timothee.biometricattendance"
+        minSdk = 24  // Android 7.0 (Nougat)
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
 dependencies {
     // Core Android
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    
-    // Jetpack Compose
     implementation("androidx.activity:activity-compose:1.8.0")
+
+    // Jetpack Compose
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    
-    // Navigation
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.7.5")
-    
+
+    // ViewModel Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
     // Room Database
     implementation("androidx.room:room-runtime:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
-    kapt("androidx.room:room-compiler:2.6.0")
-    
-    // Biometric
+    ksp("androidx.room:room-compiler:2.6.0")
+
+    // Biometric Authentication (Compatible with API 24+)
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
-    
-    // Location Services
+
+    // Location Services (Compatible with API 24+)
     implementation("com.google.android.gms:play-services-location:21.0.1")
-    
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-    
-    // Hilt Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-compiler:2.48")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    
-    // Security
+
+    // Security Crypto (Compatible with API 23+)
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
-    
+
     // Testing
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.5.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.10.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
 ```
 
@@ -249,106 +308,37 @@ dependencies {
 
 ```
 BiometricAttendanceApp/
-│
-├── app/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/yourcompany/biometricattendance/
-│   │   │   │   │
-│   │   │   │   ├── data/
-│   │   │   │   │   ├── local/
-│   │   │   │   │   │   ├── dao/
-│   │   │   │   │   │   │   ├── UserDao.kt
-│   │   │   │   │   │   │   └── AttendanceDao.kt
-│   │   │   │   │   │   ├── entities/
-│   │   │   │   │   │   │   ├── User.kt
-│   │   │   │   │   │   │   └── Attendance.kt
-│   │   │   │   │   │   └── database/
-│   │   │   │   │   │       └── AppDatabase.kt
-│   │   │   │   │   │
-│   │   │   │   │   └── repository/
-│   │   │   │   │       ├── UserRepository.kt
-│   │   │   │   │       └── AttendanceRepository.kt
-│   │   │   │   │
-│   │   │   │   ├── domain/
-│   │   │   │   │   ├── model/
-│   │   │   │   │   │   ├── AttendanceRecord.kt
-│   │   │   │   │   │   └── UserProfile.kt
-│   │   │   │   │   └── usecase/
-│   │   │   │   │       ├── CheckInUseCase.kt
-│   │   │   │   │       ├── CheckOutUseCase.kt
-│   │   │   │   │       └── ValidateLocationUseCase.kt
-│   │   │   │   │
-│   │   │   │   ├── presentation/
-│   │   │   │   │   ├── auth/
-│   │   │   │   │   │   ├── SignUpScreen.kt
-│   │   │   │   │   │   ├── SignInScreen.kt
-│   │   │   │   │   │   └── AuthViewModel.kt
-│   │   │   │   │   │
-│   │   │   │   │   ├── home/
-│   │   │   │   │   │   ├── HomeScreen.kt
-│   │   │   │   │   │   └── HomeViewModel.kt
-│   │   │   │   │   │
-│   │   │   │   │   ├── attendance/
-│   │   │   │   │   │   ├── AttendanceHistoryScreen.kt
-│   │   │   │   │   │   └── AttendanceViewModel.kt
-│   │   │   │   │   │
-│   │   │   │   │   ├── biometric/
-│   │   │   │   │   │   ├── BiometricPromptManager.kt
-│   │   │   │   │   │   └── BiometricViewModel.kt
-│   │   │   │   │   │
-│   │   │   │   │   └── components/
-│   │   │   │   │       ├── CustomButton.kt
-│   │   │   │   │       ├── LoadingDialog.kt
-│   │   │   │   │       └── AttendanceCard.kt
-│   │   │   │   │
-│   │   │   │   ├── navigation/
-│   │   │   │   │   ├── NavGraph.kt
-│   │   │   │   │   └── Screen.kt
-│   │   │   │   │
-│   │   │   │   ├── utils/
-│   │   │   │   │   ├── Constants.kt
-│   │   │   │   │   ├── DateTimeUtils.kt
-│   │   │   │   │   ├── ValidationUtils.kt
-│   │   │   │   │   ├── PermissionUtils.kt
-│   │   │   │   │   └── LocationUtils.kt
-│   │   │   │   │
-│   │   │   │   ├── di/
-│   │   │   │   │   ├── AppModule.kt
-│   │   │   │   │   ├── DatabaseModule.kt
-│   │   │   │   │   └── RepositoryModule.kt
-│   │   │   │   │
-│   │   │   │   └── MainActivity.kt
-│   │   │   │
-│   │   │   ├── res/
-│   │   │   │   ├── drawable/
-│   │   │   │   ├── values/
-│   │   │   │   │   ├── colors.xml
-│   │   │   │   │   ├── strings.xml
-│   │   │   │   │   └── themes.xml
-│   │   │   │   └── xml/
-│   │   │   │       └── data_extraction_rules.xml
-│   │   │   │
-│   │   │   └── AndroidManifest.xml
-│   │   │
-│   │   └── test/
-│   │       └── java/com/yourcompany/biometricattendance/
-│   │           ├── viewmodel/
-│   │           │   ├── AuthViewModelTest.kt
-│   │           │   └── AttendanceViewModelTest.kt
-│   │           ├── repository/
-│   │           │   └── AttendanceRepositoryTest.kt
-│   │           └── utils/
-│   │               └── ValidationUtilsTest.kt
-│   │
-│   └── build.gradle.kts
-│
 ├── gradle/
 ├── .gitignore
 ├── build.gradle.kts
 ├── settings.gradle.kts
 ├── README.md
 └── LICENSE
+
+
+app/src/main/java/com/timothee/biometricattendance/
+├── data/
+│   ├── local/
+│   │   ├── dao/
+│   │   │   ├── UserDao.kt
+│   │   │   └── AttendanceDao.kt
+│   │   ├── entities/
+│   │   │   ├── User.kt
+│   │   │   └── Attendance.kt
+│   │   └── database/
+│   │       └── AppDatabase.kt
+│   └── repository/
+│       ├── UserRepository.kt
+│       └── AttendanceRepository.kt
+└── utils/
+    ├── Constants.kt
+    ├── ValidationUtils.kt
+    ├── SecurityUtils.kt
+    ├── DateTimeUtils.kt
+    ├── LocationUtils.kt
+    ├── SessionManager.kt
+    ├── BiometricUtils.kt
+    └── PermissionUtils.kt
 ```
 
 ---
@@ -367,7 +357,7 @@ BiometricAttendanceApp/
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/yourusername/BiometricAttendanceApp.git
+git clone https://github.com/Thimethane/BiometricAttendanceApp.git
 cd BiometricAttendanceApp
 ```
 
@@ -657,20 +647,20 @@ SOFTWARE.
 ## 📞 Contact
 
 ### Project Maintainer
-- **Name**: [Your Name]
-- **Email**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/yourusername)
-- **LinkedIn**: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- **Name**: Timothee RINGUYENEZA
+- **Email**: thimethane@gmail.com
+- **GitHub**: [@Thimethane](https://github.com/Thimethane)
+- **LinkedIn**:[LinkedIn](https://www.linkedin.com/in/timotheeringuyeneza/)
 
 ### Report Issues
 Found a bug or have a feature request?
-- Open an [Issue](https://github.com/yourusername/BiometricAttendanceApp/issues)
+- Open an [Issue](https://github.com/Thimethane/BiometricAttendanceApp/issues)
 - Use appropriate labels (bug/enhancement/question)
 - Provide detailed description with steps to reproduce
 
 ### Community
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/BiometricAttendanceApp/discussions)
-- **Wiki**: [Project Wiki](https://github.com/yourusername/BiometricAttendanceApp/wiki)
+- **Discussions**: [GitHub Discussions](https://github.com/Thimethane/BiometricAttendanceApp/discussions)
+- **Wiki**: [Project Wiki](https://github.com/Thimethane/BiometricAttendanceApp/wiki)
 
 ---
 
@@ -686,13 +676,13 @@ Found a bug or have a feature request?
 ## 📊 Project Status
 
 ![Development Status](https://img.shields.io/badge/status-in%20development-yellow)
-![GitHub Issues](https://img.shields.io/github/issues/yourusername/BiometricAttendanceApp)
-![GitHub Pull Requests](https://img.shields.io/github/issues-pr/yourusername/BiometricAttendanceApp)
-![Last Commit](https://img.shields.io/github/last-commit/yourusername/BiometricAttendanceApp)
+![GitHub Issues](https://img.shields.io/github/issues/Thimethane/BiometricAttendanceApp)
+![GitHub Pull Requests](https://img.shields.io/github/issues-pr/Thimethane/BiometricAttendanceApp)
+![Last Commit](https://img.shields.io/github/last-commit/Thimethane/BiometricAttendanceApp)
 
 **Current Version**: 1.0.0-alpha  
 **Last Updated**: December 2024  
-**Roadmap**: See [Projects Tab](https://github.com/yourusername/BiometricAttendanceApp/projects)
+**Roadmap**: See [Projects Tab](https://github.com/Thimethane/BiometricAttendanceApp/projects)
 
 ---
 

@@ -1,6 +1,6 @@
 package com.timothee.biometricattendance.utils
 
-object `Constants.kt` {
+object Constants {
     // Minimum Android Version Info
     const val MIN_SDK_VERSION = 24 // Android 7.0
 
