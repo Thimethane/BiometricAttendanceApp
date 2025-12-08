@@ -29,6 +29,10 @@ object LocationUtils {
         return earthRadius * c
     }
 
+    // Make these accessible for HomeViewModel
+    const val OFFICE_LATITUDE = Constants.OFFICE_LATITUDE
+    const val OFFICE_LONGITUDE = Constants.OFFICE_LONGITUDE
+
     /**
      * Check if user is within office premises
      */

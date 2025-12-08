@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp") // Kotlin Symbol Processing
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -43,7 +43,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        // MATCHING with Compose BOM 2024+
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     packaging {
@@ -53,20 +54,22 @@ android {
     }
 }
 
-// No repositories block here — repositories are defined in settings.gradle.kts
-
 dependencies {
     // Core Android
     implementation(libs.androidx.core.ktx.v1120)
     implementation(libs.androidx.lifecycle.runtime.ktx.v262)
     implementation(libs.androidx.activity.compose.v180)
 
-    // Jetpack Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    // 🚀 UPDATED COMPOSE BOM (Fixes HorizontalDivider)
+    implementation(platform("androidx.compose:compose-bom:2024.10.01"))
+
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+
+    // 🚀 Updated Material3 version
+    implementation("androidx.compose.material3:material3:1.2.1")
+
     implementation("androidx.compose.material:material-icons-extended")
 
     // Navigation
@@ -81,24 +84,24 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.0")
     ksp("androidx.room:room-compiler:2.6.0")
 
-    // Biometric Authentication (API 24+)
+    // Biometric Authentication
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
 
-    // Location Services (API 24+)
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    // 🚀 Updated location services
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    // 🚀 Updated Coroutines (Fixes 'await')
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 
-    // Security Crypto (API 23+)
+    // Security Crypto
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
