@@ -1,7 +1,7 @@
-package com.timothee.biometricattendance.data.local.dao
+package com.timothee.biometricattendanceapp.data.local.dao
 
 import androidx.room.*
-import com.timothee.biometricattendance.data.local.entities.Attendance
+import com.timothee.biometricattendanceapp.data.local.entities.Attendance
 import kotlinx.coroutines.flow.Flow
 
 @Dao

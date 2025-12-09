@@ -1,14 +1,14 @@
-package com.timothee.biometricattendance.viewmodel
+package com.timothee.biometricattendanceapp.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.timothee.biometricattendance.data.local.database.AppDatabase
-import com.timothee.biometricattendance.data.local.entities.User
-import com.timothee.biometricattendance.data.repository.UserRepository
-import com.timothee.biometricattendance.utils.SecurityUtils
-import com.timothee.biometricattendance.utils.SessionManager
-import com.timothee.biometricattendance.utils.ValidationUtils
+import com.timothee.biometricattendanceapp.data.local.database.AppDatabase
+import com.timothee.biometricattendanceapp.data.local.entities.User
+import com.timothee.biometricattendanceapp.data.repository.UserRepository
+import com.timothee.biometricattendanceapp.utils.SecurityUtils
+import com.timothee.biometricattendanceapp.utils.SessionManager
+import com.timothee.biometricattendanceapp.utils.ValidationUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

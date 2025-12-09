@@ -1,7 +1,7 @@
-package com.timothee.biometricattendance.data.repository
+package com.timothee.biometricattendanceapp.data.repository
 
-import com.timothee.biometricattendance.data.local.dao.UserDao
-import com.timothee.biometricattendance.data.local.entities.User
+import com.timothee.biometricattendanceapp.data.local.dao.UserDao
+import com.timothee.biometricattendanceapp.data.local.entities.User
 import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val userDao: UserDao) {

@@ -1,7 +1,6 @@
-package com.timothee.biometricattendance
+package com.timothee.biometricattendanceapp
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,12 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.timothee.biometricattendance.navigation.NavGraph
-import com.timothee.biometricattendance.navigation.Screen
-import com.timothee.biometricattendance.ui.theme.BiometricAttendanceAppTheme
-import com.timothee.biometricattendance.utils.SessionManager
+import com.timothee.biometricattendanceapp.navigation.NavGraph
+import com.timothee.biometricattendanceapp.navigation.Screen
+import com.timothee.biometricattendanceapp.ui.theme.BiometricAttendanceAppTheme
+import com.timothee.biometricattendanceapp.utils.SessionManager
+import androidx.fragment.app.FragmentActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private lateinit var sessionManager: SessionManager
 

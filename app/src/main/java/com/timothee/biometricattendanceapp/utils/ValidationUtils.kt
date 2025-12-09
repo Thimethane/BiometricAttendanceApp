@@ -1,4 +1,4 @@
-package com.timothee.biometricattendance.utils
+package com.timothee.biometricattendanceapp.utils
 
 import android.util.Patterns
 

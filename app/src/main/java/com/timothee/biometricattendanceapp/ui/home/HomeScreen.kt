@@ -1,4 +1,4 @@
-package com.timothee.biometricattendance.ui.home
+package com.timothee.biometricattendanceapp.ui.home
 
 import android.Manifest
 import android.location.Location
@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,12 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.timothee.biometricattendance.utils.BiometricPromptManager
-import com.timothee.biometricattendance.utils.BiometricUtils
-import com.timothee.biometricattendance.utils.DateTimeUtils
-import com.timothee.biometricattendance.utils.LocationHelper
-import com.timothee.biometricattendance.viewmodel.CheckInOutState
-import com.timothee.biometricattendance.viewmodel.HomeViewModel
+import com.timothee.biometricattendanceapp.utils.BiometricPromptManager
+import com.timothee.biometricattendanceapp.utils.BiometricUtils
+import com.timothee.biometricattendanceapp.utils.DateTimeUtils
+import com.timothee.biometricattendanceapp.utils.LocationHelper
+import com.timothee.biometricattendanceapp.viewmodel.CheckInOutState
+import com.timothee.biometricattendanceapp.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +47,7 @@ fun HomeScreen(
     var showBiometricDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
     var currentLocation by remember { mutableStateOf<Location?>(null) }
+    var locationPermissionGranted by remember { mutableStateOf(false) }
 
     val biometricManager = remember { BiometricPromptManager(activity) }
     val locationHelper = remember { LocationHelper(context) }
@@ -53,30 +56,20 @@ fun HomeScreen(
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-            // Permission granted
-        }
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        locationPermissionGranted = fineGranted || coarseGranted
     }
 
     // Load user data on launch
     LaunchedEffect(Unit) {
         viewModel.loadCurrentUser()
-
-        // Request location permission if not granted
-        if (!locationHelper.hasLocationPermission()) {
-            locationPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-        }
+        locationPermissionGranted = locationHelper.hasLocationPermission()
     }
 
-    // Get current location
-    LaunchedEffect(Unit) {
-        if (locationHelper.hasLocationPermission()) {
+    // Get current location when permission is granted
+    LaunchedEffect(locationPermissionGranted) {
+        if (locationPermissionGranted) {
             locationHelper.getCurrentLocation().collect { location ->
                 currentLocation = location
             }
@@ -143,7 +136,7 @@ fun HomeScreen(
                 title = { Text("Home") },
                 actions = {
                     IconButton(onClick = { showLogoutDialog = true }) {
-                        Icon(Icons.Default.Logout, contentDescription = "Logout")
+                        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout")
                     }
                 }
             )
@@ -194,6 +187,40 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Location Permission Warning
+            if (!locationPermissionGranted) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Location Permission Required",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Please grant location permission to mark attendance")
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Button(
+                            onClick = {
+                                locationPermissionLauncher.launch(
+                                    arrayOf(
+                                        Manifest.permission.ACCESS_FINE_LOCATION,
+                                        Manifest.permission.ACCESS_COARSE_LOCATION
+                                    )
+                                )
+                            }
+                        ) {
+                            Text("Grant Permission")
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             // Today's Status Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -239,7 +266,6 @@ fun HomeScreen(
                             }
                         }
 
-                        // Duration if both check-in and check-out exist
                         if (todayAttendance?.checkInTime != null &&
                             todayAttendance?.checkOutTime != null) {
                             Spacer(modifier = Modifier.height(12.dp))
@@ -269,8 +295,17 @@ fun HomeScreen(
             // Check-In Button
             Button(
                 onClick = {
+                    if (!locationPermissionGranted) {
+                        locationPermissionLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                            )
+                        )
+                        return@Button
+                    }
+
                     if (!BiometricUtils.isBiometricAvailable(context)) {
-                        // Show error
                         return@Button
                     }
 
@@ -305,7 +340,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.Login, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.Login, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Check In", style = MaterialTheme.typography.titleMedium)
                     }
@@ -352,7 +387,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.Logout, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Check Out", style = MaterialTheme.typography.titleMedium)
                     }

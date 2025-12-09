@@ -1,10 +1,10 @@
-package com.timothee.biometricattendance.ui.attendance
+package com.timothee.biometricattendanceapp.ui.attendance
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.*
@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.timothee.biometricattendance.data.local.entities.Attendance
-import com.timothee.biometricattendance.utils.DateTimeUtils
-import com.timothee.biometricattendance.viewmodel.AttendanceViewModel
+import com.timothee.biometricattendanceapp.data.local.entities.Attendance
+import com.timothee.biometricattendanceapp.utils.DateTimeUtils
+import com.timothee.biometricattendanceapp.viewmodel.AttendanceViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +39,7 @@ fun AttendanceHistoryScreen(
                 title = { Text("Attendance History") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )

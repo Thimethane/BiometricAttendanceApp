@@ -1,16 +1,17 @@
-package com.timothee.biometricattendance.navigation
+package com.timothee.biometricattendanceapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.timothee.biometricattendance.ui.auth.SetPasswordScreen
-import com.timothee.biometricattendance.ui.auth.SignInScreen
-import com.timothee.biometricattendance.ui.auth.SignUpScreen
-import com.timothee.biometricattendance.ui.home.HomeScreen
-import com.timothee.biometricattendance.ui.attendance.AttendanceHistoryScreen
+import com.timothee.biometricattendanceapp.ui.auth.SetPasswordScreen
+import com.timothee.biometricattendanceapp.ui.auth.SignInScreen
+import com.timothee.biometricattendanceapp.ui.auth.SignUpScreen
+import com.timothee.biometricattendanceapp.ui.home.HomeScreen
+import com.timothee.biometricattendanceapp.ui.attendance.AttendanceHistoryScreen
 
 @Composable
 fun NavGraph(

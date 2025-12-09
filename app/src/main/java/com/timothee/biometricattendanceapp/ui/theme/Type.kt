@@ -1,4 +1,4 @@
-package com.timothee.biometricattendance.ui.theme
+package com.timothee.biometricattendanceapp.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

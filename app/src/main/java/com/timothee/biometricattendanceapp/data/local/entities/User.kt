@@ -1,4 +1,4 @@
-package com.timothee.biometricattendance.data.local.entities
+package com.timothee.biometricattendanceapp.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

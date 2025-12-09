@@ -1,4 +1,4 @@
-package com.timothee.biometricattendance.utils
+package com.timothee.biometricattendanceapp.utils
 
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -9,8 +9,8 @@ class BiometricPromptManager(
     private val activity: FragmentActivity
 ) {
 
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private var biometricPrompt: BiometricPrompt? = null
+    private var promptInfo: BiometricPrompt.PromptInfo? = null
 
     /**
      * Show biometric prompt for authentication
@@ -18,81 +18,85 @@ class BiometricPromptManager(
     fun showBiometricPrompt(
         title: String,
         subtitle: String,
-        negativeButtonText: String = "Cancel",
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
         onFailed: () -> Unit
     ) {
-        // Check if biometric is available
-        val biometricManager = BiometricManager.from(activity)
-        val canAuthenticate = biometricManager.canAuthenticate(
-            BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
-        )
-
-        when (canAuthenticate) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                // Biometric is available, continue
-            }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                onError("No biometric hardware available on this device")
-                return
-            }
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                onError("Biometric hardware is currently unavailable")
-                return
-            }
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                onError("No biometric credentials enrolled. Please enroll in device settings")
-                return
-            }
-            else -> {
-                onError("Biometric authentication not available")
-                return
-            }
-        }
-
-        // Create biometric prompt callback
-        val executor = ContextCompat.getMainExecutor(activity)
-
-        biometricPrompt = BiometricPrompt(
-            activity,
-            executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    if (errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON ||
-                        errorCode == BiometricPrompt.ERROR_USER_CANCELED) {
-                        onError("Authentication cancelled")
-                    } else {
-                        onError("Authentication error: $errString")
-                    }
-                }
-
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    onSuccess()
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    onFailed()
-                }
-            }
-        )
-
-        // Build prompt info
-        promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(title)
-            .setSubtitle(subtitle)
-            .setAllowedAuthenticators(
+        try {
+            // Check if biometric is available
+            val biometricManager = BiometricManager.from(activity)
+            val canAuthenticate = biometricManager.canAuthenticate(
                 BiometricManager.Authenticators.BIOMETRIC_STRONG or
                         BiometricManager.Authenticators.DEVICE_CREDENTIAL
             )
-            .build()
 
-        // Show prompt
-        biometricPrompt.authenticate(promptInfo)
+            when (canAuthenticate) {
+                BiometricManager.BIOMETRIC_SUCCESS -> {
+                    // Biometric is available, continue
+                }
+                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                    onError("No biometric hardware available on this device")
+                    return
+                }
+                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                    onError("Biometric hardware is currently unavailable")
+                    return
+                }
+                BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                    onError("No biometric credentials enrolled. Please enroll in device settings")
+                    return
+                }
+                else -> {
+                    onError("Biometric authentication not available")
+                    return
+                }
+            }
+
+            // Create biometric prompt callback
+            val executor = ContextCompat.getMainExecutor(activity)
+
+            biometricPrompt = BiometricPrompt(
+                activity,
+                executor,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                        super.onAuthenticationError(errorCode, errString)
+                        if (errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON ||
+                            errorCode == BiometricPrompt.ERROR_USER_CANCELED) {
+                            onError("Authentication cancelled")
+                        } else {
+                            onError("Authentication error: $errString")
+                        }
+                    }
+
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        super.onAuthenticationSucceeded(result)
+                        onSuccess()
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        onFailed()
+                    }
+                }
+            )
+
+            // Build prompt info
+            promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle(title)
+                .setSubtitle(subtitle)
+                .setAllowedAuthenticators(
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                            BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                )
+                .build()
+
+            // Show prompt
+            promptInfo?.let { biometricPrompt?.authenticate(it) }
+
+        } catch (e: Exception) {
+            onError("Error showing biometric prompt: ${e.localizedMessage}")
+        }
     }
 
     /**

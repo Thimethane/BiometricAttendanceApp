@@ -1,4 +1,4 @@
-package com.timothee.biometricattendance.utils
+package com.timothee.biometricattendanceapp.utils
 
 object Constants {
     // Minimum Android Version Info

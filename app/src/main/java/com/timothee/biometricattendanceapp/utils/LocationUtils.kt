@@ -1,6 +1,5 @@
-package com.timothee.biometricattendance.utils
+package com.timothee.biometricattendanceapp.utils
 
-import android.location.Location
 import kotlin.math.*
 
 object LocationUtils {

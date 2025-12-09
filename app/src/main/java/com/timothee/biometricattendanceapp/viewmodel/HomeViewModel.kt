@@ -1,17 +1,18 @@
-package com.timothee.biometricattendance.viewmodel
+package com.timothee.biometricattendanceapp.viewmodel
 
 import android.app.Application
 import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.timothee.biometricattendance.data.local.database.AppDatabase
-import com.timothee.biometricattendance.data.local.entities.Attendance
-import com.timothee.biometricattendance.data.local.entities.User
-import com.timothee.biometricattendance.data.repository.AttendanceRepository
-import com.timothee.biometricattendance.data.repository.UserRepository
-import com.timothee.biometricattendance.utils.DateTimeUtils
-import com.timothee.biometricattendance.utils.LocationUtils
-import com.timothee.biometricattendance.utils.SessionManager
+import com.timothee.biometricattendanceapp.data.local.database.AppDatabase
+import com.timothee.biometricattendanceapp.data.local.entities.Attendance
+import com.timothee.biometricattendanceapp.data.local.entities.User
+import com.timothee.biometricattendanceapp.data.repository.AttendanceRepository
+import com.timothee.biometricattendanceapp.data.repository.UserRepository
+import com.timothee.biometricattendanceapp.utils.Constants
+import com.timothee.biometricattendanceapp.utils.DateTimeUtils
+import com.timothee.biometricattendanceapp.utils.LocationUtils
+import com.timothee.biometricattendanceapp.utils.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,10 +57,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 if (userId != -1) {
                     val user = userRepository.getUserById(userId)
                     _currentUser.value = user
-                    loadTodayAttendance(userId)
+                    if (user != null) {
+                        loadTodayAttendance(userId)
+                    }
                 }
             } catch (e: Exception) {
-                // Handle error
+                // Handle error silently or log
+                e.printStackTrace()
             }
         }
     }
@@ -74,7 +78,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 val attendance = attendanceRepository.getAttendanceByDate(userId, today)
                 _todayAttendance.value = attendance
             } catch (e: Exception) {
-                // Handle error
+                e.printStackTrace()
             }
         }
     }
@@ -96,7 +100,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 userRepository.updateBiometricStatus(user.id, true)
                 _currentUser.value = user.copy(isBiometricRegistered = true)
             } catch (e: Exception) {
-                // Handle error
+                e.printStackTrace()
             }
         }
     }
@@ -126,7 +130,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
                 // Validate location
                 if (location == null) {
-                    _checkInState.value = CheckInOutState.Error("Unable to get location. Please enable GPS")
+                    _checkInState.value = CheckInOutState.Error("Unable to get location. Please enable GPS and try again")
+                    return@launch
+                }
+
+                // Check location accuracy
+                if (location.accuracy > Constants.GPS_ACCURACY_THRESHOLD) {
+                    _checkInState.value = CheckInOutState.Error(
+                        "GPS accuracy is too low (${location.accuracy.toInt()}m). Please wait for better signal"
+                    )
                     return@launch
                 }
 
@@ -140,19 +152,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     val distance = LocationUtils.calculateDistance(
                         location.latitude,
                         location.longitude,
-                        LocationUtils.OFFICE_LATITUDE,
-                        LocationUtils.OFFICE_LONGITUDE
+                        Constants.OFFICE_LATITUDE,
+                        Constants.OFFICE_LONGITUDE
                     )
                     _checkInState.value = CheckInOutState.Error(
                         "You are not at office premises. Distance: ${LocationUtils.formatDistance(distance)} from office"
-                    )
-                    return@launch
-                }
-
-                // Check location accuracy
-                if (!LocationUtils.isLocationAccurate(location.accuracy)) {
-                    _checkInState.value = CheckInOutState.Error(
-                        "GPS accuracy is too low (${location.accuracy.toInt()}m). Please wait for better signal"
                     )
                     return@launch
                 }
@@ -175,11 +179,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         "Checked in successfully at ${DateTimeUtils.getCurrentTime()}"
                     )
                 } else {
-                    _checkInState.value = CheckInOutState.Error("Failed to check in")
+                    _checkInState.value = CheckInOutState.Error("Failed to check in. Please try again")
                 }
 
             } catch (e: Exception) {
-                _checkInState.value = CheckInOutState.Error(e.message ?: "Unknown error occurred")
+                _checkInState.value = CheckInOutState.Error(
+                    "Error: ${e.localizedMessage ?: "Unknown error occurred"}"
+                )
+                e.printStackTrace()
             }
         }
     }
@@ -216,7 +223,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
                 // Validate location
                 if (location == null) {
-                    _checkOutState.value = CheckInOutState.Error("Unable to get location. Please enable GPS")
+                    _checkOutState.value = CheckInOutState.Error("Unable to get location. Please enable GPS and try again")
                     return@launch
                 }
 
@@ -230,8 +237,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     val distance = LocationUtils.calculateDistance(
                         location.latitude,
                         location.longitude,
-                        LocationUtils.OFFICE_LATITUDE,
-                        LocationUtils.OFFICE_LONGITUDE
+                        Constants.OFFICE_LATITUDE,
+                        Constants.OFFICE_LONGITUDE
                     )
                     _checkOutState.value = CheckInOutState.Error(
                         "You are not at office premises. Distance: ${LocationUtils.formatDistance(distance)} from office"
@@ -267,7 +274,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 )
 
             } catch (e: Exception) {
-                _checkOutState.value = CheckInOutState.Error(e.message ?: "Unknown error occurred")
+                _checkOutState.value = CheckInOutState.Error(
+                    "Error: ${e.localizedMessage ?: "Unknown error occurred"}"
+                )
+                e.printStackTrace()
             }
         }
     }

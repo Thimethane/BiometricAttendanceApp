@@ -43,7 +43,7 @@ android {
     }
 
     composeOptions {
-        // MATCHING with Compose BOM 2024+
+        // Matched with Compose BOM 2024.10.01
         kotlinCompilerExtensionVersion = "1.5.14"
     }
 
@@ -55,54 +55,70 @@ android {
 }
 
 dependencies {
-    // Core Android
+
+    /* -----------------------------------------------
+     * Android Core
+     * --------------------------------------------- */
     implementation(libs.androidx.core.ktx.v1120)
     implementation(libs.androidx.lifecycle.runtime.ktx.v262)
     implementation(libs.androidx.activity.compose.v180)
 
-    // 🚀 UPDATED COMPOSE BOM (Fixes HorizontalDivider)
+    /* -----------------------------------------------
+     * Jetpack Compose (Using BOM)
+     * --------------------------------------------- */
     implementation(platform("androidx.compose:compose-bom:2024.10.01"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
-    // 🚀 Updated Material3 version
+    // Updated Material3
     implementation("androidx.compose.material3:material3:1.2.1")
 
+    // Extended Icons
     implementation("androidx.compose.material:material-icons-extended")
 
-    // Navigation
+    /* -----------------------------------------------
+     * Navigation & Lifecycle
+     * --------------------------------------------- */
     implementation("androidx.navigation:navigation-compose:2.7.5")
-
-    // ViewModel + Lifecycle for Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
-    // Room Database
+    /* -----------------------------------------------
+     * Room Database
+     * --------------------------------------------- */
     implementation("androidx.room:room-runtime:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
     ksp("androidx.room:room-compiler:2.6.0")
 
-    // Biometric Authentication
+    /* -----------------------------------------------
+     * Biometrics + Security
+     * --------------------------------------------- */
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
-    // 🚀 Updated location services
+    /* -----------------------------------------------
+     * Location Services
+     * --------------------------------------------- */
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    // 🚀 Updated Coroutines (Fixes 'await')
+    /* -----------------------------------------------
+     * Coroutines (Updated)
+     * --------------------------------------------- */
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 
-    // Security Crypto
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
-
-    // Testing
+    /* -----------------------------------------------
+     * Testing
+     * --------------------------------------------- */
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

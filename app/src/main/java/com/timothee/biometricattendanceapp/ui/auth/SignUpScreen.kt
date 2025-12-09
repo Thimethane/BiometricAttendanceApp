@@ -1,4 +1,4 @@
-package com.timothee.biometricattendance.ui.auth
+package com.timothee.biometricattendanceapp.ui.auth
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,8 +19,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.timothee.biometricattendance.viewmodel.AuthViewModel
-import com.timothee.biometricattendance.viewmodel.SignUpState
+import com.timothee.biometricattendanceapp.viewmodel.AuthViewModel
+import com.timothee.biometricattendanceapp.viewmodel.SignUpState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
