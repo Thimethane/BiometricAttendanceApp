@@ -26,7 +26,6 @@ A modern Kotlin-based Android application that enables touch-free employee atten
 - [Security Features](#-security-features)
 - [Known Limitations](#-known-limitations)
 - [Future Enhancements](#-future-enhancements)
-- [Troubleshooting](#-troubleshooting)
 - [Contributing](#-contributing)
 - [License](#-license)
 - [Contact](#-contact)
@@ -447,7 +446,7 @@ BiometricAttendanceApp/
 
 **Option A: Clone with Git**
 ```bash
-git clone https://github.com/timothee/BiometricAttendanceApp.git
+git clone https://github.com/Thimethane/BiometricAttendanceApp.git
 cd BiometricAttendanceApp
 ```
 
@@ -1134,90 +1133,7 @@ val hash = SecurityUtils.hashPassword(password, salt)
 
 ---
 
-## 🐛 Troubleshooting
 
-### **Common Issues & Solutions**
-
-#### **Issue: Gradle Sync Failed**
-**Error:** "Plugin [id: 'com.google.devtools.ksp'] was not found"
-
-**Solution:**
-1. Check **project-level** `build.gradle.kts` has KSP plugin with version
-2. Ensure both files are configured correctly
-3. File → Invalidate Caches / Restart
-4. Try sync again
-
----
-
-#### **Issue: Biometric Not Working**
-**Error:** "Biometric hardware unavailable"
-
-**Solution:**
-1. Check device has fingerprint/face unlock hardware
-2. Go to **Settings → Security → Biometric**
-3. Enroll at least one fingerprint/face
-4. Ensure screen lock is enabled (PIN/Pattern/Password)
-
----
-
-#### **Issue: Location Not Detected**
-**Error:** "Unable to get location"
-
-**Solution:**
-1. Enable **GPS** in device settings
-2. Grant location permission: **Settings → Apps → BiometricAttendance → Permissions**
-3. Ensure "While using the app" is selected
-4. Move outdoors for better GPS signal
-5. Wait 10-20 seconds for GPS to acquire signal
-
----
-
-#### **Issue: Check-In Outside Office**
-**Error:** "You are not at office premises"
-
-**Solution:**
-1. Verify you're within 200m of office
-2. Check office coordinates in `Constants.kt` are correct
-3. Increase `OFFICE_RADIUS_METERS` if needed (edit Constants.kt)
-4. Ensure GPS accuracy is < 50m (check in app UI)
-
----
-
-#### **Issue: Import Errors**
-**Error:** Red underlines, "Unresolved reference"
-
-**Solution:**
-1. Place cursor on error
-2. Press **Alt + Enter** (Windows/Linux) or **Option + Enter** (Mac)
-3. Select "Import"
-4. If still failing: **Build → Clean Project**, then **Build → Rebuild Project**
-
----
-
-#### **Issue: App Crashes on Start**
-**Error:** App closes immediately after opening
-
-**Solution:**
-1. Check **Logcat** in Android Studio for error details
-2. Common causes:
-    - Missing permissions in manifest
-    - Database migration issue → uninstall and reinstall app
-    - Incorrect package name
-3. Try: **Build → Clean Project → Rebuild Project**
-4. Reinstall app on device/emulator
-
----
-
-#### **Issue: Database Not Creating**
-**Error:** "Cannot access database"
-
-**Solution:**
-1. Check Room annotations are correct (@Entity, @Dao, @Database)
-2. Ensure KSP is processing annotations (check build output)
-3. Try: **Build → Clean Project**
-4. Check `AppDatabase.kt` singleton pattern is correct
-
----
 
 ## 🤝 Contributing
 
@@ -1292,20 +1208,20 @@ SOFTWARE.
 ## 📞 Contact
 
 ### **Project Maintainer**
-- **Name**: Timothee
-- **Email**: timothee@example.com
-- **GitHub**: [@timothee](https://github.com/timothee)
-- **LinkedIn**: [Timothee's Profile](https://linkedin.com/in/timothee)
+- **Name**: Timothee RINGUYENEZA
+- **Email**: timotheeringuyeneza@gmail.com
+- **GitHub**: [@Thimethane](https://github.com/Thimethane)
+- **LinkedIn**: [Timothee's Profile](https://www.linkedin.com/in/timotheeringuyeneza/)
 
 ### **Report Issues**
 Found a bug or have a feature request?
-- Open an [Issue](https://github.com/timothee/BiometricAttendanceApp/issues)
+- Open an [Issue](https://github.com/Thimethane/BiometricAttendanceApp/issues)
 - Use appropriate labels (bug/enhancement/question)
 - Provide detailed description with steps to reproduce
 
 ### **Get Help**
 - **Stack Overflow**: Tag with `biometric-attendance` and `android`
-- **GitHub Discussions**: [Project Discussions](https://github.com/timothee/BiometricAttendanceApp/discussions)
+- **GitHub Discussions**: [Project Discussions](https://github.com/Thimethane/BiometricAttendanceApp/discussions)
 - **Documentation**: Check this README first
 
 ---
@@ -1324,25 +1240,17 @@ Found a bug or have a feature request?
 ## 📊 Project Statistics
 
 ![Development Status](https://img.shields.io/badge/status-active-success.svg)
-![Code Size](https://img.shields.io/github/languages/code-size/timothee/BiometricAttendanceApp)
-![GitHub Issues](https://img.shields.io/github/issues/timothee/BiometricAttendanceApp)
-![GitHub Pull Requests](https://img.shields.io/github/issues-pr/timothee/BiometricAttendanceApp)
-![Last Commit](https://img.shields.io/github/last-commit/timothee/BiometricAttendanceApp)
+![Code Size](https://img.shields.io/github/languages/code-size/Thimethane/BiometricAttendanceApp)
+![GitHub Issues](https://img.shields.io/github/issues/Thimethane/BiometricAttendanceApp)
+![GitHub Pull Requests](https://img.shields.io/github/issues-pr/Thimethane/BiometricAttendanceApp)
+![Last Commit](https://img.shields.io/github/last-commit/Thimethane/BiometricAttendanceApp)
 
 **Current Version**: 1.0.0  
 **Last Updated**: December 2024  
 **Total Files**: 26+ core files  
-**Lines of Code**: ~3,500+  
-**Assignment Completion**: 100% ✅
+**Lines of Code**: ~3,500+
 
 ---
-
-## 🎓 Assignment Submission Info
-
-**Student**: Timothee  
-**Course**: Mobile Application Development  
-**Assignment**: Part 1 - Biometric Attendance System  
-**Submission Date**: December 2024
 
 **Deliverables**:
 - ✅ Complete Android Studio project
@@ -1352,13 +1260,6 @@ Found a bug or have a feature request?
 - ✅ Screenshots of all screens and test cases
 - ✅ Video demonstration (optional)
 
-**Assignment Requirements Met**: 100%
-- All core features implemented
-- All test cases passing
-- Complete documentation provided
-- APK tested on physical device
-- Screenshots captured for all scenarios
-
 ---
 
 <div align="center">
@@ -1367,9 +1268,9 @@ Found a bug or have a feature request?
 
 **Made with ❤️ by Timothee**
 
-[Report Bug](https://github.com/timothee/BiometricAttendanceApp/issues) ·
-[Request Feature](https://github.com/timothee/BiometricAttendanceApp/issues) ·
-[Documentation](https://github.com/timothee/BiometricAttendanceApp/wiki)
+[Report Bug](https://github.com/Thimethane/BiometricAttendanceApp/issues) ·
+[Request Feature](https://github.com/Thimethane/BiometricAttendanceApp/issues) ·
+[Documentation](https://github.com/Thimethane/BiometricAttendanceApp/wiki)
 
 </div>
 
